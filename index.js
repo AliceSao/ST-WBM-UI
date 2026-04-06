@@ -817,12 +817,18 @@
     // 若已存在则直接显示（每次开启重新应用尺寸以适配屏幕旋转/缩放）
     const existing = document.getElementById("wbm-modal-overlay");
     if (existing) {
-      const mob = window.innerWidth <= 768;
-      existing.style.alignItems    = mob ? "stretch" : "center";
+      const mob = window.innerWidth < 1100;
+      const mw  = mob ? "100%" : "min(1440px, 96vw)";
+      existing.style.alignItems     = mob ? "stretch" : "center";
       existing.style.justifyContent = mob ? "flex-start" : "center";
+      existing.style.zIndex         = "2147483646";
+      const topBar = existing.querySelector(".wbm-modal-topbar");
+      if (topBar) {
+        topBar.style.width = mw;
+      }
       const ctr = existing.querySelector(".wbm-modal-container");
       if (ctr) {
-        ctr.style.width          = mob ? "100%" : "min(1440px, 96vw)";
+        ctr.style.width          = mw;
         ctr.style.flex           = mob ? "1"  : "";
         ctr.style.minHeight      = mob ? "0"  : "";
         ctr.style.height         = mob ? ""   : "min(900px, calc(92vh - 36px))";
@@ -838,19 +844,22 @@
     // ── 遮罩层（纵向 flex，从上到下：关闭条 → iframe 容器） ──
     const overlay = document.createElement("div");
     overlay.id = "wbm-modal-overlay";
-    // 手机（≤768px）全屏覆盖；桌面居中浮层
-    const isMobile = window.innerWidth <= 768;
+    // 手机/平板（<1100px）全屏覆盖；桌面（≥1100px）居中浮层
+    // ★ z-index: 2147483646（CSS最大值）确保覆盖 ST 任何面板/抽屉，
+    //   无论 body 是否有 transform（transform 会建立新层叠上下文，
+    //   但 html 无 transform，我们的 fixed 元素在 root 层叠上下文中最高）
+    const isMobile = window.innerWidth < 1100;
 
     Object.assign(overlay.style, {
       position: "fixed", inset: "0",
       background: "rgba(0,0,0,0.78)",
       display: "flex",
       flexDirection: "column",
-      // 手机：从顶部开始堆叠（避免 100vh 计算依赖）
+      // 手机/平板：从顶部开始堆叠（避免 100vh 计算依赖）
       // 桌面：居中显示
       alignItems: isMobile ? "stretch" : "center",
       justifyContent: isMobile ? "flex-start" : "center",
-      zIndex: "10000",
+      zIndex: "2147483646",
       padding: "0",
       boxSizing: "border-box",
     });
@@ -859,6 +868,7 @@
 
     // ── 关闭按钮条（在 iframe 上方，独立行，不会重叠任何 Vue 内容） ──
     const topBar = document.createElement("div");
+    topBar.className = "wbm-modal-topbar";          // 供 reuse 逻辑查找
     Object.assign(topBar.style, {
       width: modalWidth,            // 手机 100% / 桌面固定宽
       height: "32px",               // 固定高，不参与 100vh 计算
