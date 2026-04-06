@@ -944,7 +944,11 @@
     container.appendChild(iframe);
     overlay.appendChild(topBar);     // 关闭条在上
     overlay.appendChild(container); // iframe 在下
-    document.body.appendChild(overlay);
+    // 挂载到 <html> 而非 <body>：
+    // ST 手机端用 body transform 实现滑入抽屉动画，
+    // position:fixed 在有 transform 的祖先内会相对于该祖先定位而非视口。
+    // 将遮罩挂到 html 元素（html 无 transform），可保证 fixed 始终相对视口。
+    document.documentElement.appendChild(overlay);
     log("模态窗口已打开");
   }
 

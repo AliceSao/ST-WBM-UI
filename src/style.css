@@ -210,6 +210,7 @@ body {
   color: var(--text);
   font-size: 13px;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   max-width: 100vw;
 }
@@ -219,6 +220,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   max-width: 100vw;
 }
@@ -1049,16 +1051,26 @@ body {
 
   /* ── 导航栏紧凑化 ── */
   .wbm-nav {
-    flex-wrap: nowrap;     /* 不换行——已有 flex-shrink 控制收缩 */
+    flex-wrap: nowrap;
     gap: 4px;
     padding: 5px 8px;
+    min-height: 0;
   }
   .wbm-title { font-size: 12px; }
-  .wbm-version { display: none; }   /* 手机上隐藏版本号省空间 */
-  .wbm-nav-actions { gap: 3px; }
+  .wbm-version { display: none; }
+  .wbm-nav-actions {
+    gap: 3px;
+    flex-shrink: 0;
+    flex-wrap: nowrap;   /* 手机端不换行，改为图标化 */
+  }
   .wbm-nav-actions .btn {
-    padding: 4px 7px;
-    font-size: 11px;
+    padding: 4px 8px;
+    font-size: 14px;
+    min-width: 32px;
+  }
+  /* 手机端隐藏按钮文字标签，只保留 emoji 图标 */
+  .wbm-nav-actions .btn .btn-label {
+    display: none;
   }
 
   /* ── 移动端标签栏（替代分屏，切换左/右面板） ── */

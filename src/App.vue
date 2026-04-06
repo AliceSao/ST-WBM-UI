@@ -20,10 +20,10 @@
       <span class="wbm-title">📖 世界书管理器 <span class="wbm-version">v1.0</span></span>
       <div class="wbm-nav-actions">
         <button class="btn btn-primary" :disabled="!anyDirty || saving" @click="saveAll">
-          {{ saving ? '⏳ 保存中...' : '💾 保存' }}
+          {{ saving ? '⏳' : '💾' }}<span class="btn-label">{{ saving ? ' 保存中...' : ' 保存' }}</span>
         </button>
-        <button class="btn" @click="triggerImport" title="从本地 JSON 文件导入世界书">📥 导入</button>
-        <button class="btn" @click="refreshWorldbooks">🔄 刷新</button>
+        <button class="btn" @click="triggerImport" title="从本地 JSON 文件导入世界书">📥<span class="btn-label"> 导入</span></button>
+        <button class="btn" @click="refreshWorldbooks">🔄<span class="btn-label"> 刷新</span></button>
         <!-- 主题切换器 -->
         <div class="theme-picker-wrap" ref="themePickerRef">
           <button class="btn" @click="toggleThemePicker" title="切换主题">🎨</button>
