@@ -813,6 +813,23 @@
   // 内嵌模态窗口（在 ST 界面内打开世界书管理器）
   // =========================================================================
 
+  // ── 页面滚动锁定/解锁（防止模态层背后的 ST 页面被意外滚动）──
+  // 记住打开前的 overflow 值，关闭时精确还原
+  let _prevHtmlOverflow = "";
+  function lockPageScroll() {
+    _prevHtmlOverflow = document.documentElement.style.overflow || "";
+    document.documentElement.style.overflow = "hidden";
+  }
+  function unlockPageScroll() {
+    document.documentElement.style.overflow = _prevHtmlOverflow;
+  }
+
+  // ── 统一关闭弹窗（隐藏+解锁滚动） ──
+  function closeModal(overlay) {
+    overlay.style.display = "none";
+    unlockPageScroll();
+  }
+
   function openManagerModal() {
     // 若已存在则直接显示（每次开启重新应用尺寸以适配屏幕旋转/缩放）
     const existing = document.getElementById("wbm-modal-overlay");
@@ -838,6 +855,7 @@
         ctr.style.flexDirection  = "column";
       }
       existing.style.display = "flex";
+      lockPageScroll();
       return;
     }
 
@@ -905,7 +923,7 @@
       closeBtn.style.background = "rgba(20,10,30,0.88)";
       closeBtn.style.color = "rgba(255,255,255,0.85)";
     });
-    closeBtn.addEventListener("click", () => { overlay.style.display = "none"; });
+    closeBtn.addEventListener("click", () => { closeModal(overlay); });
     topBar.appendChild(closeBtn);
 
     // ── iframe 容器（紧跟在关闭条下方） ──
@@ -941,14 +959,14 @@
     // ESC 关闭
     function onKeydown(e) {
       if (e.key === "Escape" && overlay.style.display !== "none") {
-        overlay.style.display = "none";
+        closeModal(overlay);
       }
     }
     document.addEventListener("keydown", onKeydown);
 
     // 点击遮罩背景关闭
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) overlay.style.display = "none";
+      if (e.target === overlay) closeModal(overlay);
     });
 
     container.appendChild(iframe);
@@ -959,6 +977,9 @@
     // position:fixed 在有 transform 的祖先内会相对于该祖先定位而非视口。
     // 将遮罩挂到 html 元素（html 无 transform），可保证 fixed 始终相对视口。
     document.documentElement.appendChild(overlay);
+    // 锁定背景页滚动（防止用户滚动 ST 页面而非弹窗内容，
+    // 同时稳定 #bg1 等 background-attachment:fixed 元素的宽度）
+    lockPageScroll();
     log("模态窗口已打开");
   }
 
@@ -967,6 +988,12 @@
   // =========================================================================
 
   function injectPanel() {
+    // 防重复注入：ST 扩展框架在某些场景下会多次调用 onLoad/ready，
+    // 多个相同 id 的元素进入同一 form 会触发 "Duplicate form field id" 错误
+    if (document.getElementById("wbm-panel")) {
+      log("面板已存在，跳过重复注入");
+      return;
+    }
     const settingsContainer = document.getElementById("extensions_settings") ||
       document.querySelector(".extensions_settings") ||
       document.querySelector("#extension_settings");
