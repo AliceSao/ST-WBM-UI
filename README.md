@@ -1,34 +1,13 @@
-﻿# ST-WBM-UI — 世界书管理器前端扩展
+# ST-WBM-UI v1.1.0
 
-> SillyTavern 前端扩展，提供双面板世界书编辑器。
+  SillyTavern 世界书管理器前端扩展。
 
-## 安装
+  > 完整文档、安装说明与使用指南见主仓库文档目录：
+  >
+  > **📖 [WorldBookManager 文档](https://github.com/AliceSao/WorldBookManager/tree/main/docs/st_wbm)**
 
-将本仓库克隆到 SillyTavern 的扩展目录：
+  ## 概述
 
-```
-cd SillyTavern/data/default-user/extensions/
-git clone https://github.com/AliceSao/ST-WBM-UI.git
-```
-
-需配合后端插件 [ST-WBM-Server](https://github.com/AliceSao/ST-WBM-Server) 使用。
-
-## 功能
-
-- 在 ST 设置面板注入管理器入口（后端连接状态检测）
-- 点击按钮打开 Vue 3 双面板世界书编辑器（iframe 模态弹窗）
-- 支持批量操作、搜索、跨世界书复制、5种主题切换
-
-## 命令行操作
-
-斜杠命令已在 v1.1.0 中移除。如需命令行操作，请使用 [Python CLI](https://github.com/AliceSao/WorldBookManager)。
-
-## 版本
-
-- **v1.1.0** — 移除斜杠命令和 JS-Slash-Runner 依赖；修复小屏幕弹窗上漂
-- **v1.0.0** — 初始版本
-
-## 源码
-
-本仓库仅包含运行时文件。完整源码（Vue 3 SPA）维护于主仓库：
-[AliceSao/WorldBookManager](https://github.com/AliceSao/WorldBookManager)
+  - **功能**：注入入口面板 + iframe 弹窗打开双面板 Vue UI，依赖 ST-WBM-Server 后端
+  - **安装**：克隆本仓库到 `SillyTavern/public/extensions/third-party/ST-WBM-UI/`
+  - **依赖**：[ST-WBM-Server](https://github.com/AliceSao/ST-WBM-Server)
